@@ -15,6 +15,8 @@ if sec >= 60:
     if mic1 >= 60:
         mic = mic1 - 60
         userH = userH + 1
+        if userH >=24:
+            userH = userH - 24
 
 addTime = datetime.time(userH, mic, sec)
 print(addTime)
