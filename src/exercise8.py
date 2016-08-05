@@ -15,8 +15,8 @@ def prime_numer_test():
     else:
         for i in cfactors:
             if (num % i ) == 0:
-                total += i
-        if total != sum(factors):
+                total += 1
+        if total == 2:
             print('{0:d} is a prime'.format(num))
         else:
             print('{0:d} is NOT a prime'.format(num))
