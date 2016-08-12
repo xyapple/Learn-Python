@@ -1,4 +1,4 @@
-# This is a random guess game
+# This is a random guess game FOR loop
 import random
 print('I am thinking of a number between 1 and 20. \n Please enter an number')
 
