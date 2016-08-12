@@ -1,0 +1,26 @@
+# This is a random guess game While Loop
+import random
+print('This is the random guessing game. \n You have to keep guessing until you are right.')
+userNu = int(input())
+guessNu = random.randint(1,21)
+
+while guessNu != userNu:
+
+
+
+    if userNu > guessNu:
+            print('Your number is too high')
+
+    if userNu < guessNu:
+             print('Your number is too low')
+
+    print('Try again')
+
+    userNu = int(input())
+
+    if userNu == guessNu:
+            print('Yeah! You are correct!')
+            break
+
+if userNu == guessNu:
+    print('Yeah! Your number is correct!' + str(guessNu))
