@@ -27,7 +27,8 @@ class Dog:
         self.speakText = bark
 # When creating the new puppy we don’t know it’s birthday. Pick the
 # first dog’s birthday plus one year. The speakText will be the
-# concatenation of both dog’s text. The dog on the left side of the + # operator is the object referenced by the "self" parameter. The
+# concatenation of both dog’s text. The dog on the left side of the +
+#  operator is the object referenced by the "self" parameter. The
 # "otherDog" parameter is the dog on the right side of the + operator.
     def __add__(self, otherDog):
         return Dog('Puppy of ' + self.name +
@@ -47,6 +48,8 @@ def main():
         print(puppy.speak())
         print(puppy.getName())
         print(puppy.birthDate())
-
+# this code calls the main function to get everything started. The condition in this
+#  if statement evaluates to True when the module is executed by the interpreter, but
+#  not when it is imported into another module.
 if __name__ == '__main__':
           main()
