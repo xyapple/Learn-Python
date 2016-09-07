@@ -1,15 +1,5 @@
+import tkinter
 import turtle
-
-class PyList:
-    def __init__(self):
-        self.items = []
-
-    def append(self,item):
-        self.items = self.items + [item]
-
-    def __iter__(self):
-        for c in self.items: yield c
-
 
 class DrawingApplication(tkinter.Frame):
     def __init__(self, master=None):
@@ -74,91 +64,91 @@ class DrawingApplication(tkinter.Frame):
 
                 self.graphicsCommands.append(cmd)
 
-        def loadFile():
-            filename = tkinter.filedialog.askopenfilename(title="Select a Graphics File")
+    def loadFile():
+        filename = tkinter.filedialog.askopenfilename(title="Select a Graphics File")
 
-            newWindow()
+        newWindow()
 
-            for cmd in self.graphicsCommands:
-                cmd.draw(theTurtle)
+        for cmd in self.graphicsCommands:
+            cmd.draw(theTurtle)
 
+    screen.update()
+
+    fileMenu.add_command(label="Load...", command=loadFile)
+
+    def addToFile():
+
+        filename = tkinter.filedialog.askopenfilename(title="Select a Graphics File")
+
+        theTurtle.penup()
+        theTurtle.goto(0, 0)
+        theTurtle.pendown()
+        theTurtle.pencolor("#000000")
+        theTurtle.fillcolor("#000000")
+        cmd = PenUpCommand()
+        self.graphicsCommands.append(cmd)
+        cmd = GoToCommand(0, 0, 1, "#000000")
+        self.graphicsCommands.append(cmd)
+        cmd = PenDownCommand()
+        self.graphicsCommands.append(cmd)
+        screen.update()
+        parse(filename)
+
+        for cmd in self.graphicsCommands:
+            cmd.draw(theTurtle)
             screen.update()
 
-        fileMenu.add_command(label="Load...", command=loadFile)
+    fileMenu.add_command(label="Load Into...", command=addToFile)
 
-        def addToFile():
+    def write(filename):
 
-            filename = tkinter.filedialog.askopenfilename(title="Select a Graphics File")
+        file = open(filename, "w")
+        file.write(’ < ?xml version = "1.0" encoding = "UTF-8" standalone = "no" ? > \n’)
+        file.write(’ < GraphicsCommands >\n’)
+        for cmd in self.graphicsCommands:
+            file.write(’ ’+str(cmd) + "\n")
+            file.write(’ < / GraphicsCommands >\n’)
+            file.close()
 
-            theTurtle.penup()
-            theTurtle.goto(0, 0)
-            theTurtle.pendown()
-            theTurtle.pencolor("#000000")
-            theTurtle.fillcolor("#000000")
-            cmd = PenUpCommand()
-            self.graphicsCommands.append(cmd)
-            cmd = GoToCommand(0, 0, 1, "#000000")
-            self.graphicsCommands.append(cmd)
-            cmd = PenDownCommand()
-            self.graphicsCommands.append(cmd)
-            screen.update()
-            parse(filename)
+    def  saveFile():
+        filename = tkinter.filedialog.asksaveasfilename(title="Save Picture As...")
+        write(filename)
 
-            for cmd in self.graphicsCommands:
-                cmd.draw(theTurtle)
-                screen.update()
+    fileMenu.add_command(label="Save As...", command=saveFile)
 
-        fileMenu.add_command(label="Load Into...", command=addToFile)
+    fileMenu.add_command(label="Exit", command=self.master.quit)
 
-        def write(filename):
+    bar.add_cascade(label="File", menu=fileMenu)
 
-            file = open(filename, "w")
-            file.write(’ < ?xml version = "1.0" encoding = "UTF-8" standalone = "no" ? > \n’)
-            file.write(’ < GraphicsCommands >\n’)
-            for cmd in self.graphicsCommands:
-                file.write(’ ’+str(cmd) + "\n")
-                file.write(’ < / GraphicsCommands >\n’)
-                file.close()
+    self.master.config(menu=bar)
+    canvas = tkinter.Canvas(self, width=600, height=600)
+    canvas.pack(side=tkinter.LEFT)
+    theTurtle = turtle.RawTurtle(canvas)
 
-        def  saveFile():
-            filename = tkinter.filedialog.asksaveasfilename(title="Save Picture As...")
-            write(filename)
+    theTurtle.shape("circle")
+    screen = theTurtle.getscreen()
 
-        fileMenu.add_command(label="Save As...", command=saveFile)
+    screen.tracer(0)
 
-        fileMenu.add_command(label="Exit", command=self.master.quit)
+    sideBar = tkinter.Frame(self, padx=5, pady=5)
+    sideBar.pack(side=tkinter.RIGHT, fill=tkinter.BOTH)
 
-        bar.add_cascade(label="File", menu=fileMenu)
+    pointLabel = tkinter.Label(sideBar, text="Width")
+    pointLabel.pack()
 
-        self.master.config(menu=bar)
-        canvas = tkinter.Canvas(self, width=600, height=600)
-        canvas.pack(side=tkinter.LEFT)
-        theTurtle = turtle.RawTurtle(canvas)
+    widthSize = tkinter.StringVar()
+    widthEntry = tkinter.Entry(sideBar, textvariable=widthSize)
 
-        theTurtle.shape("circle")
-        screen = theTurtle.getscreen()
+    widthEntry.pack()
+    widthSize.set(str(1))
+    radiusLabel = tkinter.Label(sideBar, text="Radius")
+    radiusLabel.pack()
+    radiusSize = tkinter.StringVar()
+    radiusEntry = tkinter.Entry(sideBar, textvariable=radiusSize)
+    radiusSize.set(str(10))
+    radiusEntry.pack()
 
-        screen.tracer(0)
-
-        sideBar = tkinter.Frame(self, padx=5, pady=5)
-        sideBar.pack(side=tkinter.RIGHT, fill=tkinter.BOTH)
-
-        pointLabel = tkinter.Label(sideBar, text="Width")
-        pointLabel.pack()
-
-        widthSize = tkinter.StringVar()
-        widthEntry = tkinter.Entry(sideBar, textvariable=widthSize)
-
-        widthEntry.pack()
-        widthSize.set(str(1))
-        radiusLabel = tkinter.Label(sideBar, text="Radius")
-        radiusLabel.pack()
-        radiusSize = tkinter.StringVar()
-        radiusEntry = tkinter.Entry(sideBar, textvariable=radiusSize)
-        radiusSize.set(str(10))
-        radiusEntry.pack()
-
-        def circleHandler():
+    def circleHandler():
               # When drawing, a command is created and then the command is drawn by calling
             # the draw method. Adding the command to the graphicsCommands sequence means the
             # application will remember the picture.
@@ -180,100 +170,101 @@ class DrawingApplication(tkinter.Frame):
         penEntry.pack()
         penColor.set("#000000")
 
-        def getPenColor():
-            color = tkinter.colorchooser.askcolor()
+    def getPenColor():
+        color = tkinter.colorchooser.askcolor()
             if color != None:
                 penColor.set(str(color)[-9:-2])
 
         penColorButton = tkinter.Button(sideBar, text="Pick Pen Color", command=getPenColor)
         penColorButton.pack(fill=tkinter.BOTH)
-        fillLabel = tkinter.Label(sideBar, text="Fill Color")
-        fillLabel.pack()
-        fillColor = tkinter.StringVar()
-        fillEntry = tkinter.Entry(sideBar, textvariable=fillColor)
-        fillEntry.pack()
-        fillColor.set("#000000")
 
-        def getFillColor():
-            color = tkinter.colorchooser.askcolor()
+    fillLabel = tkinter.Label(sideBar, text="Fill Color")
+    fillLabel.pack()
+    fillColor = tkinter.StringVar()
+    fillEntry = tkinter.Entry(sideBar, textvariable=fillColor)
+    fillEntry.pack()
+    fillColor.set("#000000")
+
+    def getFillColor():
+        color = tkinter.colorchooser.askcolor()
             if color != None:
                 fillColor.set(str(color)[-9:-2])
 
-        fillColorButton = \
-            tkinter.Button(sideBar, text="Pick Fill Color", command=getFillColor)
-        fillColorButton.pack(fill=tkinter.BOTH)
+    fillColorButton = \
+        tkinter.Button(sideBar, text="Pick Fill Color", command=getFillColor)
+    fillColorButton.pack(fill=tkinter.BOTH)
 
-        def beginFillHandler():
+    def beginFillHandler():
 
-            cmd = BeginFillCommand(fillColor.get())
+        cmd = BeginFillCommand(fillColor.get())
+        cmd.draw(theTurtle)
+        self.graphicsCommands.append(cmd)
+        beginFillButton = tkinter.Button(sideBar, text="Begin Fill", command=beginFillHandler)
+        beginFillButton.pack(fill=tkinter.BOTH)
+
+    def endFillHandler():
+
+            cmd = EndFillCommand()
             cmd.draw(theTurtle)
             self.graphicsCommands.append(cmd)
-            beginFillButton = tkinter.Button(sideBar, text="Begin Fill", command=beginFillHandler)
-            beginFillButton.pack(fill=tkinter.BOTH)
+            endFillButton = tkinter.Button(sideBar, text="End Fill", command=endFillHandler)
+            endFillButton.pack(fill=tkinter.BOTH)
+            penLabel = tkinter.Label(sideBar, text="Pen Is Down")
+            penLabel.pack()
 
-        def endFillHandler():
+    def penUpHandler():
 
-                cmd = EndFillCommand()
+            cmd = PenUpCommand()
+            cmd.draw(theTurtle)
+            penLabel.configure(text="Pen Is Up")
+            self.graphicsCommands.append(cmd)
+            penUpButton = tkinter.Button(sideBar, text="Pen Up", command=penUpHandler)
+            penUpButton.pack(fill=tkinter.BOTH)
+
+    def penDownHandler():
+
+            cmd = PenDownCommand()
+            cmd.draw(theTurtle)
+            penLabel.configure(text="Pen Is Down")
+            self.graphicsCommands.append(cmd)
+            penDownButton = tkinter.Button(sideBar, text="Pen Down", command=penDownHandler)
+            penDownButton.pack(fill=tkinter.BOTH)
+
+# Here is another event handler. This one handles mouse clicks on the screen.
+    def clickHandler(x,y):
+
+  # When a mouse click occurs, get the widthSize entry value and set the width of the # pen to the widthSize value. The float(widthSize.get()) is needed because
+  # the width is a float, but the entry widget stores it as a string.
+            cmd = GoToCommand(x, y, float(widthSize.get()), penColor.get())
+            cmd.draw(theTurtle)
+            self.graphicsCommands.append(cmd)
+            screen.update()
+            screen.listen()
+
+                        # Here is how we tie the clickHandler to mouse clicks. screen.onclick(clickHandler)
+    def dragHandler(x, y):
+
+            cmd = GoToCommand(x, y, float(widthSize.get()), penColor.get())
+            cmd.draw(theTurtle)
+            self.graphicsCommands.append(cmd)
+            screen.update()
+            screen.listen()
+            theTurtle.ondrag(dragHandler)
+
+# the undoHandler undoes the last command by removing it from the # sequence and then redrawing the entire picture.
+    def undoHandler():
+        if len(self.graphicsCommands) > 0:
+            self.graphicsCommands.removeLast()
+            theTurtle.clear()
+            theTurtle.penup()
+            theTurtle.goto(0, 0)
+            theTurtle.pendown()
+            for cmd in self.graphicsCommands:
                 cmd.draw(theTurtle)
-                self.graphicsCommands.append(cmd)
-                endFillButton = tkinter.Button(sideBar, text="End Fill", command=endFillHandler)
-                endFillButton.pack(fill=tkinter.BOTH)
-                penLabel = tkinter.Label(sideBar, text="Pen Is Down")
-                penLabel.pack()
-
-        def penUpHandler():
-
-                cmd = PenUpCommand()
-                cmd.draw(theTurtle)
-                penLabel.configure(text="Pen Is Up")
-                self.graphicsCommands.append(cmd)
-                penUpButton = tkinter.Button(sideBar, text="Pen Up", command=penUpHandler)
-                penUpButton.pack(fill=tkinter.BOTH)
-
-        def penDownHandler():
-
-                cmd = PenDownCommand()
-                cmd.draw(theTurtle)
-                penLabel.configure(text="Pen Is Down")
-                self.graphicsCommands.append(cmd)
-                penDownButton = tkinter.Button(sideBar, text="Pen Down", command=penDownHandler)
-                penDownButton.pack(fill=tkinter.BOTH)
-
-    # Here is another event handler. This one handles mouse clicks on the screen.
-        def clickHandler(x,y):
-
-      # When a mouse click occurs, get the widthSize entry value and set the width of the # pen to the widthSize value. The float(widthSize.get()) is needed because
-      # the width is a float, but the entry widget stores it as a string.
-                cmd = GoToCommand(x, y, float(widthSize.get()), penColor.get())
-                cmd.draw(theTurtle)
-                self.graphicsCommands.append(cmd)
-                screen.update()
-                screen.listen()
-
-                            # Here is how we tie the clickHandler to mouse clicks. screen.onclick(clickHandler)
-        def dragHandler(x, y):
-
-                cmd = GoToCommand(x, y, float(widthSize.get()), penColor.get())
-                cmd.draw(theTurtle)
-                self.graphicsCommands.append(cmd)
-                screen.update()
-                screen.listen()
-                theTurtle.ondrag(dragHandler)
-
-    # the undoHandler undoes the last command by removing it from the # sequence and then redrawing the entire picture.
-        def undoHandler():
-            if len(self.graphicsCommands) > 0:
-                self.graphicsCommands.removeLast()
-                theTurtle.clear()
-                theTurtle.penup()
-                theTurtle.goto(0, 0)
-                theTurtle.pendown()
-                for cmd in self.graphicsCommands:
-                    cmd.draw(theTurtle)
-                screen.update()
-                screen.listen()
-        screen.onkeypress(undoHandler, "u")
-        screen.listen()
+            screen.update()
+            screen.listen()
+    screen.onkeypress(undoHandler, "u")
+    screen.listen()
 
 def main():
 
