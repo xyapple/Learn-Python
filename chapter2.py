@@ -1,4 +1,5 @@
 '''
+Week Two: Variables and Expressions
 Constants; Variables
 '''
 hrs = input("Enter hours:")
